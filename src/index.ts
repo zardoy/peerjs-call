@@ -80,10 +80,11 @@ if (peerId === '') {
     })
 } else if (peerId) {
     const fullHdConstraints = {
-        video: { width: { exact: 1920 }, height: { exact: 1080 } }
+        width: { exact: 1920 }, height: { exact: 1080 }
     };
     const hdConstraints = {
-        video: { width: { exact: 1280 }, height: { exact: 720 } },
+        width: 1280,
+        height: 720,
         frameRate: 60,
     }
 
