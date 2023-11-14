@@ -1,0 +1,17 @@
+{
+    "name": "peerjs-call",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "scripts": {
+        "start": "vite",
+        "build": "vite build"
+    },
+    "dependencies": {
+        "@types/webrtc": "^0.0.40",
+        "peerjs": "^1.5.1",
+        "qrcode": "^1.5.3",
+        "vite": "^4.5.0",
+        "vite-plugin-mkcert": "^1.16.0"
+    }
+}
