@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 
 export default defineConfig({
-    root: './',
+    base: './',
     server: {
         https: true,
     },
