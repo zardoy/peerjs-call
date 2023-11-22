@@ -41,7 +41,7 @@ const peer = new Peerjs({
 
 let qs = new URLSearchParams(location.search)
 
-let peerId = qs.get('peer') || prompt('Enter peer id or empty string if host:')
+let peerId = qs.get('peer')/*  || prompt('Enter peer id or empty string if host:') */ || ''
 
 if (peerId === null) {
     // exit early
@@ -60,8 +60,12 @@ if (peerId === '') {
         currentCall = call
         console.log('call receive')
         call.answer()
+        const streamId = +(qs.get('stream') || '0')
+        let skipped = 0
+        let video: HTMLVideoElement | undefined
         call.on('stream', (stream) => {
-            const video = document.createElement('video')
+            if (skipped++ !== streamId) return
+            video = document.createElement('video')
             video.srcObject = stream
             video.controls = true
             video.muted = true
@@ -70,6 +74,7 @@ if (peerId === '') {
         })
         call.on('close', () => {
             currentCall = undefined
+            video?.remove()
         })
     })
 
@@ -99,15 +104,21 @@ if (peerId === '') {
                 exact: true,
             },
         },
-        // audio: true
+        audio: qs.get('audio') === '1'
     }, (stream) => {
         const call = peer.call(peerId!, stream)
 
         call.on('iceStateChanged', console.warn)
         console.log(call)
-        call.on('close', () => {
-            const reconnect = confirm('Finished. Reconnect?')
+        call.on('close', async () => {
+            const reconnect = qs.get('reconnect') || confirm('Finished. Reconnect?')
+            await new Promise(resolve => {
+                const lastRefresh = +(localStorage.get('lastRefresh') || 0)
+                const wait = Date.now() - lastRefresh < 4000 ? 4000 : 0
+                setTimeout(resolve, wait)
+            })
             if (reconnect) {
+                localStorage.set('lastRefresh', Date.now())
                 location.reload()
             }
         })
